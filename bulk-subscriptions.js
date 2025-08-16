@@ -18,6 +18,9 @@
 // IMPORTS ET CONFIGURATION
 // =============================================================================
 
+// Load environment variables from .env file
+require('dotenv').config();
+
 const Stripe = require('stripe');
 
 // Vérifie la présence de la clé avant d'instancier Stripe
@@ -205,16 +208,21 @@ if (!['cancel-period-end', 'cancel-now', 'pause', 'resume'].includes(mode)) {
         }
         if (name) productNames.push(name);
       }
+
+      debug && console.log('priceIds', priceIds);
+      debug && console.log('productIds', productIds);
+      debug && console.log('productNames', productNames);
       
       // =============================================================================
       // APPLICATION DES FILTRES
       // =============================================================================
-      
+
       const matchesProduct = productFilter
-        ? items.some(i => i.price?.product === productFilter)
+        ? productNames.some(name => name.toLowerCase() === productFilter.toLowerCase())
         : true;
+
       const matchesPrice = priceFilter
-        ? items.some(i => i.price?.id === priceFilter)
+        ? priceIds.some(id => id === priceFilter)
         : true;
 
       if (!matchesProduct || !matchesPrice) continue;

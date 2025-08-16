@@ -19,6 +19,7 @@
   "author": "ODI Hamd",
   "license": "MIT",
   "dependencies": {
+    "dotenv": "^17.2.1",
     "stripe": "^14.0.0"
   },
   "engines": {
