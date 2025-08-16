@@ -183,3 +183,8 @@ Les contributions sont les bienvenues ! N'hésitez pas à :
 - Proposer des améliorations
 - Ajouter de nouveaux modes d'action
 - Améliorer la documentation
+- 
+## Licence
+
+This is a sandbox/demo project. No support provided.
+Licensed under the MIT License – see LICENSE for details.
