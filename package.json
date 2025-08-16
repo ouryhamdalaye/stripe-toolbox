@@ -1,0 +1,27 @@
+{
+  "name": "bulk-subscriptions-manager",
+  "version": "1.0.0",
+  "description": "Script Node.js pour gérer en masse les abonnements Stripe avec des filtres avancés",
+  "main": "bulk-subscriptions.js",
+  "scripts": {
+    "start": "node bulk-subscriptions.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "help": "node bulk-subscriptions.js"
+  },
+  "keywords": [
+    "stripe",
+    "subscriptions",
+    "bulk",
+    "management",
+    "nodejs",
+    "cli"
+  ],
+  "author": "ODI Hamd",
+  "license": "MIT",
+  "dependencies": {
+    "stripe": "^14.0.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
