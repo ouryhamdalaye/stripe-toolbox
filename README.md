@@ -1,28 +1,42 @@
-# Bulk Subscriptions Manager
+# Stripe Toolbox
 
-Script Node.js pour gérer en masse les abonnements Stripe avec des filtres avancés et une validation robuste.
+Une collection d'outils Node.js pour gérer les abonnements Stripe via ligne de commande.
 
-## Fonctionnalités
+## 🌿 Branches disponibles
 
-- **4 modes d'action** : Annulation (fin de période/immédiate), Pause, Reprise
-- **Filtres flexibles** : Par produit, prix, et plage de dates
-- **Validation robuste** : Dates complètes avec vérification de validité
-- **Mode dry-run** : Simulation par défaut pour éviter les erreurs
-- **Debug intégré** : Affichage détaillé des opérations
-- **Gestion d'erreurs** : Messages clairs et arrêt gracieux
+Ce repository contient plusieurs branches spécialisées pour différents cas d'usage :
 
-## Prérequis
+### 📋 `subscription-management` 
+**Gestion en masse des abonnements existants**
+- Annulation (fin de période/immédiate)
+- Pause et reprise
+- Filtres avancés (produit, prix, dates)
+- Validation robuste des dates
+- Mode dry-run par défaut
 
-- Node.js (version 14+)
-- Compte Stripe avec clé API secrète
-- Package `stripe` installé
+```bash
+# Exemple : Annuler tous les abonnements d'un produit
+node bulk-subscriptions.js cancel-now --product=prod_123 --confirm
+```
 
-## Installation
+### ➕ `subscription-creation`
+**Création d'abonnements et subscription schedules**
+- Création d'abonnements classiques
+- Création de subscription schedules (avec fin automatique)
+- Support des essais gratuits
+- Gestion des méthodes de paiement
+
+```bash
+# Exemple : Créer un abonnement avec essai
+node create-subscription.js --price=price_123 --customer=cus_456 --payment-method=pm_789 --trial-days=7 --confirm
+```
+
+## 🚀 Installation
 
 ```bash
 # Cloner le repository
 git clone <votre-repo>
-cd bulk-subscriptions-manager
+cd stripe-toolbox
 
 # Installer les dépendances
 npm install
@@ -32,159 +46,80 @@ export STRIPE_SECRET_KEY="sk_test_..."
 # ou créer un fichier .env avec STRIPE_SECRET_KEY=sk_test_...
 ```
 
-## Utilisation
+## 📖 Utilisation
 
-### Syntaxe générale
+### Changer de branche
 ```bash
-node bulk-subscriptions.js <mode> [options] [--confirm]
+# Pour la gestion en masse
+git checkout subscription-management
+
+# Pour la création d'abonnements
+git checkout subscription-creation
 ```
 
-### Modes disponibles
+### Configuration requise
+- Node.js (version 14+)
+- Compte Stripe avec clé API secrète
+- Package `stripe` installé
 
-| Mode | Description |
-|------|-------------|
-| `cancel-period-end` | Annule à la fin de la période de facturation |
-| `cancel-now` | Annule immédiatement |
-| `pause` | Met en pause (factures en draft) |
-| `resume` | Reprend les abonnements en pause/annulés |
+## 🔧 Fonctionnalités communes
 
-### Options de filtrage
+- **Mode dry-run** : Simulation par défaut pour éviter les erreurs
+- **Debug intégré** : Affichage détaillé des opérations
+- **Gestion d'erreurs** : Messages clairs et arrêt gracieux
+- **Validation stricte** : Vérification de tous les paramètres
+- **Idempotence** : Clés d'idempotence pour éviter les doublons
 
-| Option | Description | Exemple |
-|--------|-------------|---------|
-| `--product=ID` | Filtre par ID de produit | `--product=prod_123` |
-| `--price=ID` | Filtre par ID de prix | `--price=price_ABC` |
-| `--created-on=DATE` | Filtre par date de création | `--created-on=2024-12-25` |
-| `--until=DATE` | Filtre jusqu'à une date | `--until=2024-12-31` |
-| `--debug` | Active le mode debug | `--debug` |
-| `--confirm` | Exécute réellement (sinon dry-run) | `--confirm` |
+## 📋 Exemples rapides
 
-### Exemples d'utilisation
-
+### Gestion en masse (subscription-management)
 ```bash
-# Dry-run : voir ce qui serait fait
+# Voir ce qui serait fait
 node bulk-subscriptions.js cancel-period-end
 
-# Annuler tous les abonnements d'un produit spécifique
+# Annuler immédiatement avec confirmation
 node bulk-subscriptions.js cancel-now --product=prod_123 --confirm
 
-# Pause des abonnements créés le 25 décembre 2024
-node bulk-subscriptions.js pause --created-on=2024-12-25 --confirm
-
-# Reprendre les abonnements en pause avec debug
-node bulk-subscriptions.js resume --debug --confirm
-
-# Annuler les abonnements d'un prix spécifique dans une plage de dates
-node bulk-subscriptions.js cancel-period-end \
-  --price=price_ABC \
-  --created-on=2024-01-01 \
-  --until=2024-01-31 \
-  --confirm
+# Pause avec debug
+node bulk-subscriptions.js pause --created-on=2024-12-25 --debug --confirm
 ```
 
-## Validation des dates
-
-Le script valide rigoureusement les dates :
-- **Format** : `YYYY-MM-DD` obligatoire
-- **Plage d'années** : 1900-2100
-- **Validation réelle** : Vérifie que la date existe (ex: pas 30 février)
-- **Limites exclusives** : Inclut toute la journée spécifiée
-
-### Exemples de validation
+### Création (subscription-creation)
 ```bash
-# ✅ Valide
---created-on=2024-12-25
+# Créer un abonnement classique
+node create-subscription.js --price=price_123 --customer=cus_456 --payment-method=pm_789 --confirm
 
-# ❌ Invalide (format)
---created-on=25-12-2024
-
-# ❌ Invalide (date inexistante)
---created-on=2024-02-30
-
-# ❌ Invalide (année hors plage)
---created-on=1800-01-01
+# Créer un subscription schedule
+node create-subscription.js --schedule --price=price_123 --customer=cus_456 --payment-method=pm_789 --confirm
 ```
 
-## Sécurité
+## 🛠️ Dépendances
 
-- **Dry-run par défaut** : Aucune modification sans `--confirm`
-- **Validation stricte** : Vérification de tous les paramètres
-- **Gestion d'erreurs** : Arrêt gracieux en cas de problème
-- **Logs détaillés** : Traçabilité complète des actions
+- `stripe` : SDK officiel Stripe
+- `dotenv` : Gestion des variables d'environnement
 
-## Sortie
-
-### Mode normal
-```
-✔️  Annulation fin de période -> sub_1234567890
-✔️  Annulation fin de période -> sub_0987654321
-
-Résumé: 2 abonnement(s) ciblé(s). 2 modifié(s).
-```
-
-### Mode debug
-```
-Debug actif
-   mode = cancel-period-end
-   confirm = true
-   productFilter = prod_123
-   priceFilter = (none)
-   createdFilter = (none)
-
-→ Cible: sub_1234567890 | status=active | created=2024-12-25T10:30:00.000Z
-   items.priceIds = ['price_ABC']
-   items.productIds = ['prod_123']
-   items.productNames = ['Mon Produit']
-
-Annulation fin de période -> sub_1234567890
-```
-
-### Mode dry-run
-```
-[DRY-RUN] Annulation fin de période -> sub_1234567890 { cancel_at_period_end: true }
-
-Résumé: 1 abonnement(s) ciblé(s). 0 modifié(s). (dry-run – aucune modif faite)
-```
-
-## ⚠️ Avertissements
+## ⚠️ Sécurité
 
 - **Testez toujours en dry-run** avant d'exécuter
 - **Vérifiez vos filtres** pour éviter les actions non désirées
 - **Sauvegardez vos données** avant les opérations en masse
 - **Utilisez un compte de test** pour les premiers essais
 
-## Développement
+## 📚 Documentation détaillée
 
-### Structure du code
-```
-bulk-subscriptions.js
-├── Imports et configuration
-├── Parsing des arguments
-├── Validation des dates
-├── Validation du mode
-├── Logique principale
-    ├── Extraction des informations de debug
-    ├── Application des filtres
-    ├── Définition des actions
-    ├── Exécution des actions
-    └── Résumé final
-```
+Chaque branche contient sa propre documentation complète dans le README :
+- `subscription-management` : Gestion en masse avec filtres avancés
+- `subscription-creation` : Création d'abonnements et schedules
 
-### Ajout de nouveaux modes
-
-1. Ajouter le mode dans la validation
-2. Implémenter la logique dans la section "Définition des actions"
-3. Tester avec `--debug` et dry-run
-
-## Contribution
+## 🤝 Contribution
 
 Les contributions sont les bienvenues ! N'hésitez pas à :
 - Signaler des bugs
 - Proposer des améliorations
-- Ajouter de nouveaux modes d'action
+- Ajouter de nouvelles fonctionnalités
 - Améliorer la documentation
-- 
-## Licence
+
+## 📄 Licence
 
 This is a sandbox/demo project. No support provided.
 Licensed under the MIT License – see LICENSE for details.
