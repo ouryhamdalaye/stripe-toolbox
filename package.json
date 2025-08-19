@@ -1,6 +1,7 @@
 {
   "name": "bulk-subscriptions-manager",
   "version": "1.0.0",
+  "type": "module",
   "description": "Script Node.js pour gérer en masse les abonnements Stripe avec des filtres avancés",
   "main": "bulk-subscriptions.js",
   "scripts": {
